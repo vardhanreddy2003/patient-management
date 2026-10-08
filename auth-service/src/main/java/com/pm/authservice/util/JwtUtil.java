@@ -33,15 +33,22 @@ public class JwtUtil {
                 .compact();
     }
 
-    public void validateToken(String token) {
+    public void validateToken(String token)
+    {
         try {
-            Jwts.parser().verifyWith((SecretKey) secretKey)
-                    .build()
-                    .parseSignedClaims(token);
-        } catch (SignatureException e) {
-            throw new JwtException("Invalid JWT signature");
-        } catch (JwtException e) {
-            throw new JwtException("Invalid JWT");
+          Jwts.parser().verifyWith((SecretKey) secretKey)
+                  .build()
+                  .parseEncryptedClaims(token);
+        }
+        catch(SignatureException e)
+        {
+           throw new JwtException("Invalid Jwt Signature");
+
+        }
+        catch(JwtException e)
+        {
+            throw new JwtException("Invalid Jwt");
         }
     }
+
 }

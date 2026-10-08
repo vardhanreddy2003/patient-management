@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ObjectInputFilter;
 import java.util.Optional;
 
 @RestController
@@ -39,11 +40,20 @@ public class AuthController {
                 new LoginResponseDTO(token)
         );
     }
-
-    @Operation(summary="validate token")
+    @Operation(summary="validate the token")
     @GetMapping("/validate")
-    public ResponseEntity<Void> validateToken(@RequestHeader)
-    {
+   public ResponseEntity<Void> validate(@RequestHeader("Authorization") String authHeader)
+   {
+     // Authorization: Bearer <token>
+       if(authHeader==null || !authHeader.startsWith("Bearer "))
+       {
+           System.out.println("came here");
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+       }
 
-    }
+       return authService.validateToken(authHeader.substring(7))
+               ? ResponseEntity.ok().build()
+               :ResponseEntity.status(HttpStatus.OK).build();
+
+   }
 }
